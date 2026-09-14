@@ -1,0 +1,3 @@
+kanka_invoice_mail:
+    resource: '../../Controller/'
+    type: attribute

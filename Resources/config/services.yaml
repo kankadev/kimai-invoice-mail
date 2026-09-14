@@ -1,0 +1,12 @@
+parameters:
+    kanka_invoice_mail.empty: ''
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+    KimaiPlugin\KankaInvoiceMailBundle\:
+        resource: '../../*'
+        exclude: '../../{DependencyInjection,Resources,Tests,docs,tools,KankaInvoiceMailBundle.php}'
+    KimaiPlugin\KankaInvoiceMailBundle\Service\Delivery:
+        arguments:
+            $testRecipientPattern: '%env(default:kanka_invoice_mail.empty:KANKA_INVOICE_MAIL_TEST_RECIPIENT_PATTERN)%'

@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+{% block page_title %}{{ 'kanka_mail.title'|trans }}{% endblock %}
+{% block main %}
+<div class="card mb-3"><div class="card-body">
+    <p>{{ 'kanka_mail.settings_intro'|trans }}</p>
+    {{ form_start(global) }}{{ form_widget(global) }}
+    <button class="btn btn-primary" type="submit">{{ 'kanka_mail.save'|trans }}</button>{{ form_end(global) }}
+</div></div>
+<div class="alert alert-info">{{ 'kanka_mail.languages_help'|trans }}</div>
+<div class="card mb-3"><div class="card-body">
+    <h2 class="card-title">{{ 'kanka_mail.placeholders'|trans }}</h2>
+    <p>{% for key in placeholders %}<code>{{ '{' ~ key ~ '}' }}</code> {% endfor %}</p>
+    <p>{{ 'kanka_mail.placeholder_help'|trans }}</p>
+</div></div>
+{% for section in sections %}
+<div class="card mb-3"><div class="card-body">
+    <h2 class="card-title">{{ section.language|language_name }} ({{ section.language }}) · {{ 'kanka_mail.customer_count'|trans({'%count%': section.count}) }}</h2>
+    {% if section.count == 0 %}<p class="text-secondary">{{ 'kanka_mail.unused'|trans }}</p>{% endif %}
+    {% if section.missing %}<p class="text-danger">{{ 'kanka_mail.missing_template'|trans }}</p>{% endif %}
+    {{ form_start(section.form) }}{{ form_widget(section.form) }}
+    <button class="btn btn-primary" type="submit">{{ 'kanka_mail.save'|trans }}</button>{{ form_end(section.form) }}
+</div></div>
+{% else %}<p>{{ 'kanka_mail.no_customers'|trans }}</p>{% endfor %}
+<p class="text-secondary">{{ 'kanka_mail.developer'|trans }} <a href="https://kanka.dev" rel="noopener">kanka.dev</a> · <a href="https://github.com/kankadev/kimai-invoice-mail">{{ 'kanka_mail.documentation'|trans }}</a></p>
+{% endblock %}

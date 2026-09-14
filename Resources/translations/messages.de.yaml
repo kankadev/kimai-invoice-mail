@@ -1,0 +1,52 @@
+kanka_mail.title: Rechnungs-E-Mail
+kanka_mail.prepare: E-Mail vorbereiten
+kanka_mail.preview: E-Mail prüfen
+kanka_mail.send: Jetzt senden
+kanka_mail.download: E-Mail herunterladen (.eml)
+kanka_mail.save: Speichern
+kanka_mail.to: Empfänger
+kanka_mail.from: Absender
+kanka_mail.subject: Betreff
+kanka_mail.greeting: Anrede
+kanka_mail.body: Nachricht
+kanka_mail.language: Sprache
+kanka_mail.invoice: Rechnung
+kanka_mail.attachment: Angehängte Rechnung
+kanka_mail.sender_name: Anzeigename des Absenders
+kanka_mail.enable: Direktversand nach Vorschau über Kimais konfigurierten Mailer aktivieren
+kanka_mail.settings_intro: Hier die E-Mail-Standards einstellen. PDF-Inhalt und Billing Information bleiben unverändert. Direktversand ist zunächst deaktiviert.
+kanka_mail.languages_help: Die verfügbaren Sprachen ergeben sich aus den Spracheinstellungen Ihrer Kunden. Ändern Sie dort die Sprache, um eine weitere Vorlage einzurichten. Ungenutzte gespeicherte Vorlagen bleiben erhalten.
+kanka_mail.placeholders: Verfügbare Platzhalter
+kanka_mail.placeholder_help: Contact ist der vollständige Kontaktname. Vor- und Nachname werden nicht abgeleitet. Verwendete leere Angaben müssen vor der Vorbereitung ergänzt werden. Die Grußformel gehört in die Nachrichtenvorlage.
+kanka_mail.customer_count: '%count% Kunden'
+kanka_mail.unused: Diese gespeicherte Vorlage wird derzeit nicht verwendet und bleibt erhalten.
+kanka_mail.missing_template: Für diese Sprache fehlt eine Vorlage. Bitte vor dem Versand anlegen.
+kanka_mail.no_customers: Einen Kunden anlegen und dessen Sprache wählen, um eine Vorlage einzurichten.
+kanka_mail.developer: Entwickelt von
+kanka_mail.documentation: Dokumentation und Support
+kanka_mail.download_help: Eine ungesendete E-Mail zum manuellen Versand im Mailprogramm herunterladen. Die angehängte PDF ist die bestehende endgültige Rechnung, keine Entwurfsrechnung.
+kanka_mail.previous: Vorheriger Versandversuch
+kanka_mail.resend: Ich habe den vorherigen Versand geprüft und möchte diese Rechnung bewusst erneut senden.
+kanka_mail.start_over: Neu vorbereiten
+kanka_mail.sent: Der konfigurierte Mailer hat die Nachricht angenommen. Der Rechnungsstatus bleibt unverändert. Dies bestätigt noch keine Zustellung beim Empfänger.
+kanka_mail.status.accepted: Vom Mailer angenommen
+kanka_mail.status.uncertain: Versand unklar — vor erneutem Versand beim Mailanbieter prüfen
+kanka_mail.customer.greeting: Abweichende E-Mail-Anrede
+kanka_mail.customer.subject: Abweichender E-Mail-Betreff
+kanka_mail.customer.body: Abweichende E-Mail-Nachricht
+kanka_mail.customer.help: Leer lassen, um die Vorlage der Kundensprache zu verwenden. Gilt nur für E-Mails, nicht für Billing Information in der Rechnungs-PDF.
+kanka_mail.error.placeholder: Unbekannter oder fehlerhafter Platzhalter. Bitte nur die dokumentierten Platzhalter verwenden.
+kanka_mail.error.missing_value: Ein Platzhalter verweist auf leere Kunden- oder Rechnungsdaten. Bitte Angaben ergänzen oder Vorlage anpassen.
+kanka_mail.error.language: Für die Kundensprache fehlt eine vollständige Vorlage. Bitte in den Rechnungs-E-Mail-Einstellungen ergänzen.
+kanka_mail.error.customer: Der Rechnung ist kein Kunde zugeordnet.
+kanka_mail.error.attachment: Die gespeicherte Rechnungs-PDF ist nicht verfügbar. Es wird keine neue Rechnung automatisch erzeugt.
+kanka_mail.error.sender: In Kimai ist keine gültige Absenderadresse eingerichtet.
+kanka_mail.error.changed: Die angehängte Rechnung wurde seit der Vorbereitung geändert. Bitte E-Mail erneut vorbereiten und prüfen.
+kanka_mail.error.fields: Empfänger, Betreff und Nachricht prüfen. Zeilenumbrüche im Header und überlange Angaben sind nicht erlaubt.
+kanka_mail.error.recipient: Eine gültige Rechnungs-E-Mail-Adresse eintragen. Die allgemeine Kunden-E-Mail wird nicht automatisch verwendet.
+kanka_mail.error.disabled: Direktversand ist deaktiviert. In den Plugin-Einstellungen aktivieren oder die E-Mail zum manuellen Versand herunterladen.
+kanka_mail.error.test_recipient: Die Testumgebung erlaubt ausschließlich ihre festgelegten Testempfänger.
+kanka_mail.error.busy: Ein weiterer Versandversuch läuft. Bitte dessen Ergebnis vor einem erneuten Versuch prüfen.
+kanka_mail.error.duplicate: Für diese Rechnung liegt bereits ein Versandversuch vor. Doppelte Übermittlungen und unklare Wiederholungen werden blockiert. Bitte vorheriges Ergebnis prüfen.
+kanka_mail.error.transport: Versand fehlgeschlagen oder unklar. Vor erneutem Versand beim Mailanbieter prüfen. Es wurde nicht automatisch erneut gesendet.
+kanka_mail.error.expired: Diese Vorschau ist abgelaufen oder wurde ersetzt. Bitte E-Mail erneut vorbereiten und prüfen.

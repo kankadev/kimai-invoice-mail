@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+{% block page_title %}{{ 'kanka_mail.preview'|trans }}{% endblock %}
+{% block main %}
+<div class="card"><div class="card-body">
+    <dl class="row">
+        <dt class="col-sm-3">{{ 'kanka_mail.from'|trans }}</dt><dd class="col-sm-9">{{ sender }}</dd>
+        <dt class="col-sm-3">{{ 'kanka_mail.to'|trans }}</dt><dd class="col-sm-9">{{ data.to }}</dd>
+        <dt class="col-sm-3">{{ 'kanka_mail.subject'|trans }}</dt><dd class="col-sm-9">{{ data.subject }}</dd>
+        <dt class="col-sm-3">{{ 'kanka_mail.language'|trans }}</dt><dd class="col-sm-9">{{ data.language|language_name }}</dd>
+        <dt class="col-sm-3">{{ 'kanka_mail.attachment'|trans }}</dt><dd class="col-sm-9"><a href="{{ path('admin_invoice_download', {id: invoice.id}) }}" target="_blank" rel="noopener">{{ invoice.invoiceFilename }}</a></dd>
+    </dl>
+    <label for="mail-preview" class="form-label">{{ 'kanka_mail.body'|trans }}</label>
+    <textarea id="mail-preview" class="form-control mb-3" rows="13" readonly>{{ data.greeting ~ '\n\n' ~ data.body }}</textarea>
+    <p>{{ 'kanka_mail.download_help'|trans }}</p>
+    {% if not enabled %}<p class="text-warning">{{ 'kanka_mail.error.disabled'|trans }}</p>{% endif %}
+    {% if receipt %}<p class="alert alert-warning">{{ 'kanka_mail.previous'|trans }}: {{ receipt.time }} · {{ ('kanka_mail.status.' ~ receipt.status)|trans }}</p>{% endif %}
+    <form method="post" action="{{ path('kanka_invoice_mail_deliver', {id: invoice.id}) }}">
+        <input type="hidden" name="_token" value="{{ csrf_token('kanka_mail_' ~ invoice.id) }}">
+        <input type="hidden" name="nonce" value="{{ nonce }}">
+        {% if receipt and receipt.status == 'accepted' %}
+        <label class="form-check mb-3"><input class="form-check-input" type="checkbox" name="resend" value="1"><span class="form-check-label">{{ 'kanka_mail.resend'|trans }}</span></label>
+        {% endif %}
+        <div class="d-flex gap-2 flex-wrap">
+            <button class="btn btn-primary" type="submit" name="action" value="send" {% if not enabled or (receipt and receipt.status != 'accepted') %}disabled{% endif %}>{{ 'kanka_mail.send'|trans }}</button>
+            <button class="btn btn-secondary" type="submit" name="action" value="download">{{ 'kanka_mail.download'|trans }}</button>
+            <a class="btn btn-link" href="{{ path('kanka_invoice_mail_prepare', {id: invoice.id}) }}">{{ 'kanka_mail.start_over'|trans }}</a>
+        </div>
+    </form>
+</div></div>
+{% endblock %}

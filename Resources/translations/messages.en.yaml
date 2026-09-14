@@ -1,0 +1,52 @@
+kanka_mail.title: Invoice Mail
+kanka_mail.prepare: Prepare email
+kanka_mail.preview: Review email
+kanka_mail.send: Send now
+kanka_mail.download: Download email (.eml)
+kanka_mail.save: Save
+kanka_mail.to: Recipient
+kanka_mail.from: Sender
+kanka_mail.subject: Subject
+kanka_mail.greeting: Greeting
+kanka_mail.body: Message
+kanka_mail.language: Language
+kanka_mail.invoice: Invoice
+kanka_mail.attachment: Attached invoice
+kanka_mail.sender_name: Sender display name
+kanka_mail.enable: Enable reviewed direct sending through Kimai's configured mailer
+kanka_mail.settings_intro: Configure email defaults here. Invoice PDF content and billing information are not changed. Direct sending is disabled until you enable it.
+kanka_mail.languages_help: Available languages come from your customers' language settings. Change the language on a customer to configure another template. Existing unused templates are retained.
+kanka_mail.placeholders: Available placeholders
+kanka_mail.placeholder_help: Contact is the complete contact name. No first or last name is inferred. A referenced empty value must be filled before preparing the message. Include your signature in the message template.
+kanka_mail.customer_count: '%count% customers'
+kanka_mail.unused: This saved template is currently unused and has been retained.
+kanka_mail.missing_template: No template exists for this language. Add one before sending.
+kanka_mail.no_customers: Add a customer and choose their language to configure a template.
+kanka_mail.developer: Developed by
+kanka_mail.documentation: Documentation and support
+kanka_mail.download_help: Download an unsent email for manual sending in your mail application. The attached PDF is the existing final invoice, not a draft invoice.
+kanka_mail.previous: Previous delivery attempt
+kanka_mail.resend: I have checked the previous delivery and intentionally want to send this invoice again.
+kanka_mail.start_over: Start over
+kanka_mail.sent: The configured mailer accepted the message. Invoice status was not changed. This does not confirm delivery to the recipient.
+kanka_mail.status.accepted: Accepted by mailer
+kanka_mail.status.uncertain: Delivery uncertain — check the mail provider before retrying
+kanka_mail.customer.greeting: Email greeting override
+kanka_mail.customer.subject: Email subject override
+kanka_mail.customer.body: Email message override
+kanka_mail.customer.help: Leave empty to use the customer's language template. Applies only to email, not invoice PDF billing information.
+kanka_mail.error.placeholder: Unknown or malformed placeholder. Use only the documented placeholders.
+kanka_mail.error.missing_value: A placeholder refers to empty customer or invoice data. Complete the data or adjust the template.
+kanka_mail.error.language: No complete template exists for the customer's language. Configure it in Invoice Mail settings.
+kanka_mail.error.customer: The invoice has no customer.
+kanka_mail.error.attachment: The stored PDF invoice is unavailable. No new invoice will be generated automatically.
+kanka_mail.error.sender: Kimai has no valid sender address configured.
+kanka_mail.error.changed: The attached invoice changed after preparation. Prepare and review the email again.
+kanka_mail.error.fields: Check the recipient, subject and message. Header line breaks and oversized values are not allowed.
+kanka_mail.error.recipient: Enter one valid invoice email address. No automatic fallback to the general customer email is used.
+kanka_mail.error.disabled: Direct sending is disabled. Enable it in Invoice Mail settings or download the email for manual sending.
+kanka_mail.error.test_recipient: The test environment permits only its configured test recipients.
+kanka_mail.error.busy: Another delivery attempt is running. Check its result before trying again.
+kanka_mail.error.duplicate: This invoice already has a delivery attempt. Repeated submissions and uncertain retries are blocked. Check the previous result.
+kanka_mail.error.transport: Delivery failed or is uncertain. Check the mail provider before retrying; the message has not been resent automatically.
+kanka_mail.error.expired: This preview expired or was replaced. Prepare and review the email again.

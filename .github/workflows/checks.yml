@@ -1,0 +1,15 @@
+name: Checks
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: PHP syntax
+        run: git ls-files '*.php' -z | xargs -0 -n1 php -l
+      - name: Template tests
+        run: php Tests/TemplateTextTest.php
+      - name: Build source package
+        run: python3 tools/package.py

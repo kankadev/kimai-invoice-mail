@@ -1,0 +1,5 @@
+{% extends 'base.html.twig' %}
+{% block page_title %}{{ 'kanka_mail.title'|trans }}{% endblock %}
+{% block main %}
+<div class="alert {{ error ? 'alert-danger' : 'alert-success' }}">{{ message|trans }}</div>
+{% endblock %}

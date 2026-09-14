@@ -1,0 +1,10 @@
+/.env*
+/vendor/
+/var/
+/build/
+*.log
+*.sql
+*.sqlite*
+*.pdf
+*.eml
+.phpunit.cache/
