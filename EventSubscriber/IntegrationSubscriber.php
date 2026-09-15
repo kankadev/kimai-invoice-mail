@@ -28,14 +28,14 @@ final class IntegrationSubscriber implements EventSubscriberInterface
     public function menu(ConfigureMainMenuEvent $event): void
     {
         if ($this->auth->isGranted('system_configuration')) {
-            $event->getSystemMenu()->addChild(new MenuItemModel('kanka_invoice_mail', 'kanka_mail.title', 'kanka_invoice_mail_settings', [], 'email'));
+            $event->getSystemMenu()->addChild(new MenuItemModel('kanka_invoice_mail', 'kanka_mail.title', 'kanka_invoice_mail_settings', [], 'mail'));
         }
     }
 
     public function fields(CustomerMetaDefinitionEvent $event): void
     {
         foreach (['greeting' => TextType::class, 'subject' => TextType::class, 'body' => TextareaType::class] as $key => $type) {
-            $event->getEntity()->setMetaField((new CustomerMeta())->setName('kanka_mail_'.$key)->setLabel('kanka_mail.customer.'.$key)->setType($type)->setIsRequired(false)->setIsVisible(false)->setOptions(['help' => 'kanka_mail.customer.help', 'translation_domain' => 'messages']));
+            $event->getEntity()->setMetaField((new CustomerMeta())->setName('kanka_mail_'.$key)->setLabel('kanka_mail.customer.'.$key)->setType($type)->setIsRequired(false)->setIsVisible(false)->setOptions(['help' => $key === 'body' ? 'kanka_mail.customer.help' : 'kanka_mail.customer.help_short', 'help_attr' => ['class' => 'alert alert-info mt-2'], 'translation_domain' => 'messages']));
         }
     }
 

@@ -75,6 +75,16 @@ final class Settings
         $this->save('kanka_invoice_mail.sending_enabled', $enabled ? '1' : '0');
     }
 
+    public function saveAll(string $name, bool $enabled, array $templates): void
+    {
+        $this->em->getConnection()->transactional(function () use ($name, $enabled, $templates): void {
+            $this->saveGlobal($name, $enabled);
+            foreach ($templates as $language => $template) {
+                $this->saveTemplate($language, $template);
+            }
+        });
+    }
+
     private function save(string $key, string $value): void
     {
         $setting = $this->configuration->getConfiguration($key) ?? (new Configuration())->setName($key);

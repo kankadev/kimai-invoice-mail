@@ -10,6 +10,9 @@
 - [x] Persistent duplicate protection and conservative handling of uncertain transport outcomes.
 - [x] English/German documentation and a source-allowlisted ZIP builder.
 
+- [x] Settings browser acceptance: envelope icon, one Save button and visible confirmation.
+- [x] All 16 DE/EN greeting/subject/message override combinations verified in staging.
+
 ## Before a stable release
 
 - [ ] Complete interactive browser acceptance, including customer-field editing and mobile layout.

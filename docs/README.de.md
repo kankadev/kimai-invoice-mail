@@ -39,3 +39,5 @@ Bei unklarem SMTP-Ergebnis erfolgt kein automatischer Neuversand. Zuerst beim An
 Updates erhalten Einstellungen, Kundenfelder und Versandbelege. Deaktivierung und Entfernung löschen keine Daten automatisch. Vor produktiver Nutzung zuerst eine vollständig getrennte Testumgebung verwenden.
 
 Support und individuelle Anpassungen: **mail@kanka.dev** · **https://kanka.dev**. Keine echten Rechnungen oder Kundendaten in öffentlichen GitHub-Issues hinterlegen.
+
+Ein Speichern-Button speichert alle Einstellungen der Seite gemeinsam. Nach Erfolg erscheint eine sichtbare Bestätigung. Ungültige Vorlagen verhindern die gesamte Änderung. Bei den Kundenfeldern steht eine kopierbare Platzhalterhilfe.

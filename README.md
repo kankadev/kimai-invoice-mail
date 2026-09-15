@@ -106,3 +106,5 @@ Run `php Tests/TemplateTextTest.php` for standalone template tests. `python tool
 Report reproducible issues on [GitHub](https://github.com/kankadev/kimai-invoice-mail/issues), using synthetic examples. For implementation support or custom integration work, contact **[kanka.dev](https://kanka.dev)** or **mail@kanka.dev**. Please do not include invoices, credentials or private customer information in public issues.
 
 Licensed under AGPL-3.0-or-later. This is an independent plugin, not an official Kimai product.
+
+All settings on the page are saved together using one Save button. A visible confirmation appears after success. Invalid templates prevent the entire update. Customer fields include a copyable placeholder reference.
