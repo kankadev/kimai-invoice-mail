@@ -52,4 +52,3 @@ kanka_mail.error.transport: Delivery failed or is uncertain. Check the mail prov
 kanka_mail.error.expired: This preview expired or was replaced. Prepare and review the email again.
 
 kanka_mail.saved: All settings were saved.
-kanka_mail.customer.help_short: "Leave empty to inherit the language template. Placeholders are supported; see the list below Email message override."

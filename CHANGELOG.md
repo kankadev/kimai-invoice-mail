@@ -9,3 +9,8 @@ Initial development preview: multilingual invoice email templates, customer over
 - Save all settings together with visible confirmation and validation before writing.
 - Explain customer placeholders beside override fields.
 - Verified all 16 DE/EN override combinations and settings HTTP roundtrips in Kimai 2.66.
+
+### Customer email fields
+- Group subject, greeting and message in one native form fieldset with shared placeholder guidance.
+- Use distinct form block names to prevent dynamic text-field theme collisions.
+- Verify grouped field saving in English/German and 16 prepared email/PDF combinations.

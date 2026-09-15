@@ -1,0 +1,12 @@
+{% block kanka_mail_group_row %}
+<fieldset class="border rounded p-3 mb-3">
+    <legend class="float-none w-auto px-2 fs-4">{{ 'kanka_mail.title'|trans }}</legend>
+    <div class="alert alert-info">{{ 'kanka_mail.customer.help'|trans }}</div>
+    <div class="mb-3">{{ form_label(form) }}{{ form_errors(form) }}{{ form_widget(form) }}</div>
+    {{ form_row(form.parent.parent.kanka_mail_greeting.value, {'row_attr': {'class': 'mb-3'}}) }}
+    {{ form_row(form.parent.parent.kanka_mail_body.value, {'row_attr': {'class': 'mb-3'}}) }}
+    {% do form.parent.parent.kanka_mail_greeting.setRendered() %}
+    {% do form.parent.parent.kanka_mail_body.setRendered() %}
+    {% do form.parent.setRendered() %}
+</fieldset>
+{% endblock %}

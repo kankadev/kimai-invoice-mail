@@ -15,8 +15,10 @@
 
 ## Before a stable release
 
-- [ ] Complete interactive browser acceptance, including customer-field editing and mobile layout.
-- [ ] Verify the generated .eml opens as an editable message in current Thunderbird with its PDF intact.
+- [x] Customer field grouping and English/German edit/save/readback verified.
+- [x] Thunderbird manual acceptance: user confirmed editable recipient, subject, message and PDF attachment.
+- [ ] Complete mobile layout acceptance.
+- [x] Verify the generated .eml opens as an editable message in current Thunderbird with its PDF intact.
 - [ ] Verify Kimai 2.67 compatibility; currently tested on 2.66.0 only.
 - [ ] Move all integration scenarios into reproducible synthetic CI fixtures, including different permission combinations.
 - [ ] Test update/deactivation/reinstallation against a retained settings and receipt snapshot.

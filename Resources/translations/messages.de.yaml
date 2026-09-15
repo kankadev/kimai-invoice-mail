@@ -52,4 +52,3 @@ kanka_mail.error.transport: Versand fehlgeschlagen oder unklar. Vor erneutem Ver
 kanka_mail.error.expired: Diese Vorschau ist abgelaufen oder wurde ersetzt. Bitte E-Mail erneut vorbereiten und prüfen.
 
 kanka_mail.saved: Alle Einstellungen wurden gespeichert.
-kanka_mail.customer.help_short: "Leer lassen, um die Sprachvorlage zu übernehmen. Platzhalter sind möglich; die Liste steht unter E-Mail-Nachricht überschreiben."

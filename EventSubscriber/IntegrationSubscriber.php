@@ -34,8 +34,12 @@ final class IntegrationSubscriber implements EventSubscriberInterface
 
     public function fields(CustomerMetaDefinitionEvent $event): void
     {
-        foreach (['greeting' => TextType::class, 'subject' => TextType::class, 'body' => TextareaType::class] as $key => $type) {
-            $event->getEntity()->setMetaField((new CustomerMeta())->setName('kanka_mail_'.$key)->setLabel('kanka_mail.customer.'.$key)->setType($type)->setIsRequired(false)->setIsVisible(false)->setOptions(['help' => $key === 'body' ? 'kanka_mail.customer.help' : 'kanka_mail.customer.help_short', 'help_attr' => ['class' => 'alert alert-info mt-2'], 'translation_domain' => 'messages']));
+        foreach (['subject' => TextType::class, 'greeting' => TextType::class, 'body' => TextareaType::class] as $key => $type) {
+            $options = ['translation_domain' => 'messages', 'block_name' => 'kanka_mail_'.$key];
+            if ($key === 'subject') $options['block_prefix'] = 'kanka_mail_group';
+            $field = (new CustomerMeta())->setName('kanka_mail_'.$key)->setLabel('kanka_mail.customer.'.$key)->setType($type)->setIsRequired(false)->setIsVisible(false)->setOrder(['subject' => 100, 'greeting' => 101, 'body' => 102][$key])->setOptions($options);
+            if ($key !== 'subject') $field->setSection('kanka_invoice_mail');
+            $event->getEntity()->setMetaField($field);
         }
     }
 
