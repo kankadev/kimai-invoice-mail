@@ -19,3 +19,11 @@ Initial development preview: multilingual invoice email templates, customer over
 - Show one shared, translated placeholder table in customer forms and settings.
 - Separate exact copyable tokens from explanations, one placeholder per row.
 - Document preparation, read-only review, direct sending, EML download and repeat-send behavior in English and German.
+
+### Delivery outcomes and operations
+- Add an enabled-by-default option to mark new invoices Pending after recorded SMTP acceptance.
+- Distinguish definite SMTP rejection from uncertain outcomes and offer actionable translated guidance.
+- Add administrator recovery with documented decisions, CSRF and stale-receipt protection.
+- Add manual removal of old personal receipt details without deleting duplicate markers.
+- Use the existing MAILER_URL synchronously through Symfony’s SMTP factory; reject unsupported transport types.
+- Add local SMTP protocol fixtures and CI coverage.

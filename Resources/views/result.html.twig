@@ -1,5 +1,12 @@
 {% extends 'base.html.twig' %}
 {% block page_title %}{{ 'kanka_mail.title'|trans }}{% endblock %}
 {% block main %}
-<div class="alert {{ error ? 'alert-danger' : 'alert-success' }}">{{ message|trans }}</div>
+<div class="alert {{ error ? 'alert-danger' : (message in ['kanka_mail.sent_status_failed', 'kanka_mail.sent_status_permission'] ? 'alert-warning' : 'alert-success') }}">{{ message|trans }}</div>
+{% if invoice is defined %}
+<p><a href="{{ path('kanka_invoice_mail_prepare', {id: invoice.id}) }}">{{ 'kanka_mail.prepare'|trans }}</a> · <a href="{{ path('admin_invoice_list') }}">{{ 'kanka_mail.invoice'|trans }}</a></p>
+{% if receipt and receipt.status == 'uncertain' %}
+<p>{{ 'kanka_mail.recovery_help'|trans }}</p>
+{% if is_granted('system_configuration') %}<a href="{{ path('kanka_invoice_mail_recovery', {id: invoice.id}) }}">{{ 'kanka_mail.recovery'|trans }}</a>{% endif %}
+{% endif %}
+{% endif %}
 {% endblock %}

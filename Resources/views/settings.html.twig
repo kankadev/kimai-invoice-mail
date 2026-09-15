@@ -11,7 +11,7 @@
 {{ form_errors(form) }}
 <div class="card mb-3"><div class="card-body">
     <p>{{ 'kanka_mail.settings_intro'|trans }}</p>
-    {{ form_row(form.sender_name) }}{{ form_row(form.enabled) }}
+    {{ form_row(form.sender_name) }}{{ form_row(form.enabled) }}{{ form_row(form.mark_pending) }}
 
 </div></div>
 <div class="alert alert-info">{{ 'kanka_mail.languages_help'|trans }}</div>
@@ -30,5 +30,6 @@
 {% else %}<p>{{ 'kanka_mail.no_customers'|trans }}</p>{% endfor %}
 <button class="btn btn-primary mb-3" type="submit">{{ 'kanka_mail.save'|trans }}</button>
 {{ form_end(form) }}
+<p><a href="{{ path('kanka_invoice_mail_maintenance') }}">{{ 'kanka_mail.maintenance'|trans }}</a></p>
 <p class="text-secondary">{{ 'kanka_mail.developer'|trans }} <a href="https://kanka.dev" rel="noopener">kanka.dev</a> · <a href="https://github.com/kankadev/kimai-invoice-mail">{{ 'kanka_mail.documentation'|trans }}</a></p>
 {% endblock %}

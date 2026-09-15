@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+{% block page_title %}{{ 'kanka_mail.recovery'|trans }}{% endblock %}
+{% block main %}
+<div class="card"><div class="card-body">
+<p><strong>{{ invoice.invoiceNumber }}</strong> · {{ receipt.time }}</p>
+<p class="alert alert-warning">{{ 'kanka_mail.recovery_help'|trans }}</p>
+<p>{{ 'kanka_mail.recovery_instructions'|trans }}</p>
+{{ form_start(form) }}{{ form_widget(form) }}
+<button class="btn btn-primary" type="submit">{{ 'kanka_mail.recovery_save'|trans }}</button>{{ form_end(form) }}
+</div></div>
+{% endblock %}

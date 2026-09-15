@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+{% block page_title %}{{ 'kanka_mail.maintenance'|trans }}{% endblock %}
+{% block main %}
+<div class="card"><div class="card-body">
+<p>{{ 'kanka_mail.retention_help'|trans }}</p>
+{% if count is not null %}<p class="alert alert-success">{{ 'kanka_mail.retention_done'|trans({'%count%': count}) }}</p>{% endif %}
+{{ form_start(form) }}{{ form_widget(form) }}
+<button class="btn btn-primary" type="submit">{{ 'kanka_mail.compact'|trans }}</button>{{ form_end(form) }}
+</div></div>
+{% endblock %}

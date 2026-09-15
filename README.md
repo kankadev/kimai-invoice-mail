@@ -15,7 +15,7 @@ Developed by **[kanka.dev](https://kanka.dev)**. [Deutsche Anleitung](docs/READM
 - Downloads an `.eml` file with `X-Unsent: 1` for manual sending. The attached PDF remains the existing final invoice; it is not marked as a draft.
 - Supports English and German interface text independently of the customer's language.
 - Offers greeting, subject and message templates for the languages used by customers, with optional overrides per customer.
-- Keeps invoice numbers, invoice status, payment dates, PDF content and timesheets unchanged.
+- Optionally changes a new invoice to Pending after accepted direct sending; enabled by default. Paid and canceled invoices, payment dates, invoice numbers, PDFs and timesheets are preserved.
 
 ## Installation
 
@@ -34,7 +34,7 @@ git clone https://github.com/kankadev/kimai-invoice-mail.git var/plugins/KankaIn
 bin/console kimai:reload --env=prod
 ```
 
-Kimai's `MAILER_URL` and `MAILER_FROM` remain authoritative. The plugin does not store another SMTP password. See [Kimai's email documentation](https://www.kimai.org/documentation/emails.html).
+Kimai's `MAILER_URL` and `MAILER_FROM` remain authoritative. The plugin does not store another SMTP password. For direct sending, it opens a synchronous SMTP transport from that URL through Symfony’s transport factory; it does not enqueue messages. A single SMTP transport is supported. Failover, API, null and queue-only transports are not supported for this workflow. See [Kimai's email documentation](https://www.kimai.org/documentation/emails.html).
 
 ## Templates and customer overrides
 
@@ -91,15 +91,44 @@ A preview expires after 30 minutes. If the sender configuration or PDF changes, 
 
 Direct sending requires both `create_invoice` and access to the invoice/customer. The mailer accepting a message does not prove inbox delivery. Sent-folder behavior depends on the mail provider; SMTP alone does not promise a Sent copy. Do not configure an additional Sent copy without checking the provider's existing behavior.
 
-## Duplicate and error handling
+## Invoice status
 
-The repeat-send checkbox appears after a previous direct-send attempt accepted by the mailer. It is based on the plugin’s own receipt, **not** the invoice’s New/Pending status or a mailbox search. A new invoice without a plugin receipt has no repeat-send checkbox. Downloading an EML does not create a send receipt, and the plugin cannot detect a later manual send through Thunderbird. Check your own sent messages before repeating such a send.
+**Set new invoices to Pending after accepted direct sending** is enabled by default in plugin settings. It applies only after SMTP acceptance has been recorded, and requires the sender’s native `edit_invoice` permission. Paid, canceled and already pending invoices are preserved. A conditional database update also preserves a payment or cancellation saved concurrently. Disabling the option keeps the status unchanged.
 
-Only an explicit POST with a valid session and CSRF token can send. A per-invoice filesystem lock and persistent receipt prevent duplicate submissions, including simultaneous requests. A deliberately repeated send requires a new preview and explicit confirmation after a previously accepted attempt.
+Downloading an EML does not change the status; a later Thunderbird send cannot be detected. If email acceptance succeeds but updating the invoice fails or is not permitted, the result explicitly says that the email was accepted and asks you to update the status in Invoice history. **Do not resend to fix a status problem.**
 
-Before contacting SMTP, the plugin records an uncertain attempt. Transport errors or interrupted requests are not retried automatically, since the provider may already have accepted the message. Check your provider first. In this development version, clearing an uncertain receipt is an administrator recovery operation: stop sending, back up the receipt, verify delivery with the provider, then move that invoice's receipt out of the active receipt directory before intentionally preparing again. Never clear a receipt while sending is in progress.
+## Errors and safe retries
 
-Receipts are stored under Kimai's data directory in `kanka-invoice-mail/` and contain recipient, user ID, time and outcome. Include them in backups. Multi-instance deployments must share this directory on storage supporting reliable `flock` and atomic rename; distributed/cloud storage has not been validated.
+| Result | What happens | Next step |
+| --- | --- | --- |
+| SMTP connection, TLS or login fails before message submission | Recorded as failed; no message was submitted | Correct Kimai’s mail settings or provider permissions, then prepare and review a fresh attempt |
+| SMTP explicitly rejects the message with a 4xx/5xx response | Recorded as failed; the message was not accepted | Follow the displayed recipient, capacity, policy or temporary-limit guidance and prepare again |
+| Connection breaks after sending begins, with no definite result | Recorded as uncertain; direct retry is blocked | Check provider records, then use administrator recovery below |
+| SMTP accepts the message | Recorded as accepted; optional Pending update follows | A deliberate repeat requires a new preview and the repeat-send checkbox |
+| Storage fails before sending | Sending is prevented | Check free space, permissions and the previous record |
+| Storage fails after SMTP acceptance | Acceptance is explicitly reported, with recovery required | Do not resend; fix storage and confirm the outcome through recovery |
+
+No automatic retries are performed. Raw SMTP diagnostics are not displayed or stored, since they can contain account details. Error descriptions suggest checks but cannot determine the exact provider-side cause. A mailbox-full condition may be rejected immediately, or may arrive later as a bounce **after** SMTP acceptance. The plugin does not read mailboxes, detect bounces, or prove inbox delivery. See [Symfony Mailer](https://symfony.com/doc/6.4/mailer.html) and [RFC 5321](https://www.rfc-editor.org/rfc/rfc5321).
+
+The repeat-send checkbox is based on the plugin’s own receipt, not New/Pending or a mailbox search. An EML download creates no send receipt. Before repeating a manually sent email, check your sent messages yourself.
+
+### Resolve an uncertain delivery
+
+1. Open **Prepare email → Review email** for that invoice, or follow the link on its error result.
+2. A user with **system settings permission** and access to that invoice/customer can open **Resolve delivery**. Other users see guidance to contact an administrator.
+3. Check the provider’s sent messages or logs against invoice, recipient and time.
+4. Choose either **provider acceptance verified** or **new attempt authorized**, and enter a brief explanation of the check. Do not enter secrets or email contents.
+5. Save the decision. This action sends nothing. Confirmed acceptance applies the optional Pending update. A retry authorization requires a fresh preparation and review before sending.
+
+The decision records actor, time, reason and outcome. Stale forms, concurrent attempts and duplicate submissions are rejected. Do not delete receipt files to bypass a warning. Corrupt records require restoring a valid backup or operator investigation; they are not silently treated as never sent.
+
+### Storage and maintenance
+
+The plugin keeps one small JSON record and one lock file per invoice under Kimai’s data directory, `kanka-invoice-mail/`. The record is replaced on each attempt and keeps limited previous-attempt/recovery context; it is **not** an unlimited delivery history. No email body or extra PDF is stored there. At 100 invoices per month this is 1,200 records plus small lock files per year, rather than 1,200 duplicated PDFs.
+
+Open **System → Invoice Mail → Delivery record maintenance** to remove personal details from final records older than a chosen number of days (default 365, minimum 30). This removes recipient, user identifiers and notes while retaining the minimal outcome/nonce marker and lock for duplicate protection. Uncertain and retry-authorized records are excluded. A run processes at most 1,000 eligible records. Repeat if necessary. This is manual; no cron task is installed.
+
+This does not delete invoices, customer data or configuration from Kimai’s database, and does not alter backups. Configure backup retention separately. Minimal markers remain even after an invoice is deleted; complete marker removal requires an offline, coordinated cleanup and is deliberately not exposed as a routine button. Multi-instance deployments must share the receipt directory on storage supporting reliable `flock` and atomic rename. Distributed storage has not been validated.
 
 ## Safe testing
 
@@ -119,7 +148,7 @@ Replace plugin files and reload Kimai. Preserve the data directory and database:
 
 ## Development and support
 
-Run `php Tests/TemplateTextTest.php` for standalone template tests. `python tools/package.py` builds a ZIP from an explicit source allowlist. See [TODO.md](TODO.md) for remaining release work and [CHANGELOG.md](CHANGELOG.md) for changes.
+Run `php Tests/TemplateTextTest.php` for standalone template tests. Run `php Tests/SmtpSenderTest.php /path/to/vendor/autoload.php` with Symfony Mailer available for local-only SMTP protocol tests. These tests start disposable loopback servers and never relay mail. `python tools/package.py` builds a ZIP from an explicit source allowlist. See [TODO.md](TODO.md) for remaining release work and [CHANGELOG.md](CHANGELOG.md) for changes.
 
 Report reproducible issues on [GitHub](https://github.com/kankadev/kimai-invoice-mail/issues), using synthetic examples. For implementation support or custom integration work, contact **[kanka.dev](https://kanka.dev)** or **mail@kanka.dev**. Please do not include invoices, credentials or private customer information in public issues.
 

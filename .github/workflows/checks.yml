@@ -11,5 +11,10 @@ jobs:
         run: git ls-files '*.php' -z | xargs -0 -n1 php -l
       - name: Template tests
         run: php Tests/TemplateTextTest.php
+      - name: SMTP protocol tests
+        run: |
+          mkdir -p "$RUNNER_TEMP/mail-tests"
+          composer require --working-dir="$RUNNER_TEMP/mail-tests" --no-interaction --no-progress 'symfony/mailer:^6.4'
+          php Tests/SmtpSenderTest.php "$RUNNER_TEMP/mail-tests/vendor/autoload.php"
       - name: Build source package
         run: python3 tools/package.py

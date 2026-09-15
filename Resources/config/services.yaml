@@ -10,3 +10,9 @@ services:
     KimaiPlugin\KankaInvoiceMailBundle\Service\Delivery:
         arguments:
             $testRecipientPattern: '%env(default:kanka_invoice_mail.empty:KANKA_INVOICE_MAIL_TEST_RECIPIENT_PATTERN)%'
+    KimaiPlugin\KankaInvoiceMailBundle\Service\InvoiceSender:
+        alias: KimaiPlugin\KankaInvoiceMailBundle\Service\SmtpSender
+    KimaiPlugin\KankaInvoiceMailBundle\Service\SmtpSender:
+        arguments:
+            $transport: null
+            $dsn: '%env(MAILER_URL)%'

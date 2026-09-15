@@ -14,6 +14,11 @@
     <p>{{ 'kanka_mail.download_help'|trans }}</p>
     {% if not enabled %}<p class="text-warning">{{ 'kanka_mail.error.disabled'|trans }}</p>{% endif %}
     {% if receipt %}<p class="alert alert-warning">{{ 'kanka_mail.previous'|trans }}: {{ receipt.time }} · {{ ('kanka_mail.status.' ~ receipt.status)|trans }}</p>{% endif %}
+    {% if receipt and receipt.error is defined and receipt.status != 'accepted' %}<p>{{ receipt.error|trans }}</p>{% endif %}
+    {% if receipt and receipt.status == 'uncertain' %}
+        <p>{{ 'kanka_mail.recovery_help'|trans }}</p>
+        {% if is_granted('system_configuration') %}<p><a href="{{ path('kanka_invoice_mail_recovery', {id: invoice.id}) }}">{{ 'kanka_mail.recovery'|trans }}</a></p>{% endif %}
+    {% endif %}
     <form method="post" action="{{ path('kanka_invoice_mail_deliver', {id: invoice.id}) }}">
         <input type="hidden" name="_token" value="{{ csrf_token('kanka_mail_' ~ invoice.id) }}">
         <input type="hidden" name="nonce" value="{{ nonce }}">
@@ -21,7 +26,7 @@
         <label class="form-check mb-3"><input class="form-check-input" type="checkbox" name="resend" value="1"><span class="form-check-label">{{ 'kanka_mail.resend'|trans }}</span></label>
         {% endif %}
         <div class="d-flex gap-2 flex-wrap">
-            <button class="btn btn-primary" type="submit" name="action" value="send" {% if not enabled or (receipt and receipt.status != 'accepted') %}disabled{% endif %}>{{ 'kanka_mail.send'|trans }}</button>
+            <button class="btn btn-primary" type="submit" name="action" value="send" {% if not enabled or (receipt and receipt.status == 'uncertain') %}disabled{% endif %}>{{ 'kanka_mail.send'|trans }}</button>
             <button class="btn btn-secondary" type="submit" name="action" value="download">{{ 'kanka_mail.download'|trans }}</button>
             <a class="btn btn-link" href="{{ path('kanka_invoice_mail_prepare', {id: invoice.id}) }}">{{ 'kanka_mail.start_over'|trans }}</a>
         </div>

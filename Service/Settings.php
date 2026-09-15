@@ -75,10 +75,16 @@ final class Settings
         $this->save('kanka_invoice_mail.sending_enabled', $enabled ? '1' : '0');
     }
 
-    public function saveAll(string $name, bool $enabled, array $templates): void
+    public function markPending(): bool
     {
-        $this->em->getConnection()->transactional(function () use ($name, $enabled, $templates): void {
+        return $this->configuration->getConfiguration('kanka_invoice_mail.mark_pending')?->getValue() !== '0';
+    }
+
+    public function saveAll(string $name, bool $enabled, array $templates, bool $markPending = true): void
+    {
+        $this->em->getConnection()->transactional(function () use ($name, $enabled, $templates, $markPending): void {
             $this->saveGlobal($name, $enabled);
+            $this->save('kanka_invoice_mail.mark_pending', $markPending ? '1' : '0');
             foreach ($templates as $language => $template) {
                 $this->saveTemplate($language, $template);
             }

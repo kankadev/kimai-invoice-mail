@@ -39,7 +39,7 @@ final class MessageFactory
     public function file(Invoice $invoice): \SplFileInfo
     {
         $file = $this->invoices->getInvoiceFile($invoice);
-        if ($file === null || strtolower($file->getExtension()) !== 'pdf') {
+        if ($file === null || !$file->isFile() || !$file->isReadable() || strtolower($file->getExtension()) !== 'pdf') {
             throw new \InvalidArgumentException('kanka_mail.error.attachment');
         }
         return $file;
@@ -51,7 +51,8 @@ final class MessageFactory
         if (!$address) {
             throw new \InvalidArgumentException('kanka_mail.error.sender');
         }
-        return new Address($address, $this->settings->senderName());
+        try { return new Address($address, $this->settings->senderName()); }
+        catch (\Throwable) { throw new \InvalidArgumentException('kanka_mail.error.sender'); }
     }
 
     public function create(Invoice $invoice, array $data): Email

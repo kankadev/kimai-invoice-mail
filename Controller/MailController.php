@@ -4,6 +4,7 @@ namespace KimaiPlugin\KankaInvoiceMailBundle\Controller;
 
 use App\Entity\Invoice;
 use KimaiPlugin\KankaInvoiceMailBundle\Service\Delivery;
+use KimaiPlugin\KankaInvoiceMailBundle\Service\InvoiceStatus;
 use KimaiPlugin\KankaInvoiceMailBundle\Service\MessageFactory;
 use KimaiPlugin\KankaInvoiceMailBundle\Service\Settings;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,7 +22,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[IsGranted('create_invoice')]
 final class MailController extends AbstractController
 {
-    public function __construct(private MessageFactory $messages, private Delivery $delivery, private Settings $settings, private TranslatorInterface $translator)
+    public function __construct(private MessageFactory $messages, private Delivery $delivery, private Settings $settings, private TranslatorInterface $translator, private InvoiceStatus $invoiceStatus)
     {
     }
 
@@ -54,7 +55,7 @@ final class MailController extends AbstractController
             }
             return $this->render('@KankaInvoiceMail/prepare.html.twig', ['invoice' => $invoice, 'form' => $form->createView(), 'language' => $data['language'], 'sender' => $this->messages->sender()->toString()]);
         } catch (\InvalidArgumentException $e) {
-            return $this->error($e->getMessage());
+            return $this->error($e->getMessage(), $invoice);
         }
     }
 
@@ -67,7 +68,7 @@ final class MailController extends AbstractController
         }
         $prepared = $request->getSession()->get('kanka_mail_'.$invoice->getId());
         if (!is_array($prepared) || !hash_equals($prepared['nonce'], $request->request->getString('nonce')) || time() - $prepared['created'] > 1800) {
-            return $this->error('kanka_mail.error.expired');
+            return $this->error('kanka_mail.error.expired', $invoice);
         }
         try {
             $message = $this->messages->create($invoice, $prepared['data']);
@@ -79,14 +80,15 @@ final class MailController extends AbstractController
             if ($action !== 'send') throw new \InvalidArgumentException('kanka_mail.error.fields');
             $this->delivery->send($invoice->getId(), $this->getUser()->getId(), $prepared['nonce'], $message, $request->request->getBoolean('resend'));
             $request->getSession()->remove('kanka_mail_'.$invoice->getId());
-            return $this->render('@KankaInvoiceMail/result.html.twig', ['message' => 'kanka_mail.sent', 'error' => false]);
+            return $this->render('@KankaInvoiceMail/result.html.twig', ['message' => $this->invoiceStatus->afterAcceptance($invoice), 'error' => false, 'invoice' => $invoice, 'receipt' => $this->delivery->receipt($invoice->getId())]);
         } catch (\InvalidArgumentException $e) {
-            return $this->error($e->getMessage());
+            return $this->error($e->getMessage(), $invoice);
         }
     }
 
-    private function error(string $key): Response
+    private function error(string $key, Invoice $invoice): Response
     {
-        return $this->render('@KankaInvoiceMail/result.html.twig', ['message' => str_starts_with($key, 'kanka_mail.') ? $key : 'kanka_mail.error.fields', 'error' => true], new Response('', 422));
+        try { $receipt = $this->delivery->receipt($invoice->getId()); } catch (\Throwable) { $receipt = null; }
+        return $this->render('@KankaInvoiceMail/result.html.twig', ['invoice' => $invoice, 'receipt' => $receipt, 'message' => str_starts_with($key, 'kanka_mail.') ? $key : 'kanka_mail.error.fields', 'error' => true], new Response('', 422));
     }
 }

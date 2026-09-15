@@ -22,7 +22,10 @@
 - [ ] Verify Kimai 2.67 compatibility; currently tested on 2.66.0 only.
 - [ ] Move all integration scenarios into reproducible synthetic CI fixtures, including different permission combinations.
 - [ ] Test update/deactivation/reinstallation against a retained settings and receipt snapshot.
-- [ ] Add an audited administrator recovery workflow for uncertain deliveries; current recovery is documented and manual.
+- [x] Add an administrator recovery workflow with recorded decision, stale-form protection and permissions.
+- [x] Classify SMTP failures using local protocol tests and display corrective guidance.
+- [x] Optional default-on New-to-Pending transition after acceptance, preserving terminal/concurrent changes.
+- [x] Compact old personal receipt details while retaining duplicate protection.
 - [ ] Confirm filesystem locking behavior on additional supported deployment/storage platforms.
 - [ ] Package, install and validate the release artifact on a reset test instance before a production pilot.
 
@@ -31,6 +34,6 @@
 - [ ] Additional UI translations.
 - [ ] Multiple recipients and optional CC/BCC with explicit review.
 - [ ] Provider-specific Sent-folder integrations where necessary.
-- [ ] Full delivery-attempt history and retention controls.
+- [ ] Full delivery-attempt history and advanced retention policies; minimal-marker compaction is implemented.
 
 No automatic invoice creation, status-triggered sending or SMTP password management is planned for the initial scope.

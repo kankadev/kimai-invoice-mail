@@ -64,9 +64,48 @@ Die Checkbox für absichtlichen erneuten Versand erscheint nach einem früheren 
 
 Ein EML-Download erzeugt keinen Versandbeleg. Einen späteren manuellen Versand über Thunderbird erkennt das Plugin nicht. Vor einem erneuten Versand deshalb selbst die gesendeten Nachrichten prüfen. Die Annahme durch den Mailer bestätigt außerdem noch keine Zustellung im Posteingang.
 
-Rechnungsnummer, Status, Zahlungsdatum, Beträge, PDF und Zeiten bleiben unverändert. Der allgemeine Kunden-E-Mail-Wert ersetzt eine fehlende Rechnungs-E-Mail nicht automatisch. Zunächst wird genau eine Empfängeradresse unterstützt.
+Rechnungsnummer, Zahlungsdatum, Beträge, PDF und Zeiten bleiben unverändert. Neue Rechnungen werden nach protokollierter SMTP-Annahme standardmäßig auf Pending gesetzt; die Option lässt sich deaktivieren. Bereits bezahlte, stornierte oder offene Rechnungen bleiben unverändert. Der allgemeine Kunden-E-Mail-Wert ersetzt eine fehlende Rechnungs-E-Mail nicht automatisch. Zunächst wird genau eine Empfängeradresse unterstützt.
 
-Bei unklarem SMTP-Ergebnis erfolgt kein automatischer Neuversand. Zuerst beim Anbieter prüfen. Auch die Ablage im Gesendet-Ordner hängt vom Mailanbieter ab. Hinweise zu absichtlichem Neuversand, Wiederherstellung, Datenspeicherung, Tests und Mehrinstanzbetrieb stehen in der [englischen Hauptanleitung](../README.md).
+## Rechnungsstatus
+
+Die Option **Neue Rechnungen nach angenommenem Direktversand auf Pending setzen** ist standardmäßig aktiviert. Sie erfordert die native Berechtigung zum Bearbeiten der Rechnung. Auch eine gleichzeitig eingetragene Zahlung oder Stornierung wird nicht überschrieben.
+
+EML-Downloads ändern den Status nicht. Kann nach erfolgreicher SMTP-Annahme der Status nicht gespeichert werden oder fehlt die Berechtigung, weist die Ergebnisseite ausdrücklich darauf hin. Den Status dann in der Rechnungshistorie korrigieren – **deswegen nicht erneut senden**.
+
+## Fehler und erneute Versuche
+
+| Ergebnis | Verhalten und nächster Schritt |
+| --- | --- |
+| Verbindung, TLS oder Anmeldung scheitert vor der Übertragung | Als fehlgeschlagen protokolliert. Mailkonfiguration oder Berechtigungen beim Anbieter korrigieren, dann neu vorbereiten und prüfen. |
+| Ausdrückliche SMTP-Ablehnung mit 4xx/5xx | Als fehlgeschlagen protokolliert. Hinweis zu Empfänger, Kapazität, Richtlinien oder temporärem Limit beachten, dann neu vorbereiten. |
+| Abbruch nach Beginn der Übertragung ohne eindeutiges Ergebnis | Ausgang unklar; direkter Neuversand gesperrt. Beim Anbieter prüfen und administrativ klären. |
+| SMTP-Annahme bestätigt | Als angenommen protokolliert, danach optional Pending. Absichtliche Wiederholung erfordert neue Vorschau und Bestätigung. |
+| Speicherfehler vor dem Versand | Versand verhindert. Freien Speicher, Rechte und bisherigen Nachweis prüfen. |
+| Speicherfehler nach bestätigter Annahme | Nicht erneut senden. Speicherproblem beheben und Annahme über den Prüfablauf bestätigen. |
+
+Es gibt keine automatischen Neuversuche. Rohmeldungen des Mailservers werden wegen möglicher Kontodaten weder angezeigt noch gespeichert. Die Hinweise nennen sinnvolle Prüfungen; die genaue Ursache beim Anbieter kann das Plugin nicht immer bestimmen.
+
+**Postfach voll** kann sofort abgelehnt werden, aber auch erst später als Unzustellbarkeitsnachricht zurückkommen. Das Plugin liest kein Postfach und erkennt keine späteren Rückläufer. SMTP-Annahme beweist keine Zustellung im Posteingang. Auch die Ablage im Gesendet-Ordner hängt vom Anbieter ab.
+
+Der Direktversand verwendet Kimais vorhandene `MAILER_URL` und `MAILER_FROM` synchron über Symfonys SMTP-Fabrik, ohne weitere Zugangsdaten zu speichern. Ein einzelner SMTP-Transport wird unterstützt; Failover-, API- und Null-Transporte sowie Versand über eine Warteschlange gehören nicht zu diesem bestätigten Direktversand.
+
+## Unklaren Versand prüfen/freigeben
+
+1. Bei der betroffenen Rechnung **E-Mail vorbereiten → E-Mail prüfen** öffnen oder dem Link auf der Fehlerseite folgen.
+2. **Versand prüfen/freigeben** ist für Administratoren mit Berechtigung für Systemeinstellungen und Zugriff auf Rechnung/Kunde verfügbar.
+3. Gesendete Nachrichten oder Protokolle beim Mailanbieter anhand von Rechnung, Empfänger und Zeitpunkt prüfen.
+4. Annahme bestätigen oder nach Prüfung einen neuen Versuch freigeben. Die Prüfung kurz dokumentieren; keine Passwörter oder Nachrichteninhalte eintragen.
+5. Entscheidung speichern. Dabei wird nichts versendet. Bestätigte Annahme setzt gegebenenfalls Pending. Nach Freigabe ist vor dem Senden eine neue Vorbereitung und Vorschau erforderlich.
+
+Benutzer, Zeitpunkt, Ergebnis und Begründung werden festgehalten. Veraltete Formulare und parallele Versuche sind gesperrt. Nachweisdateien nicht einfach löschen, um eine Warnung zu umgehen. Beschädigte Nachweise erfordern ein gültiges Backup oder eine technische Prüfung.
+
+## Aufbewahrung und Bereinigung
+
+Pro Rechnung bleiben ein kleiner JSON-Nachweis und eine Sperrdatei erhalten. Der Nachweis wird ersetzt und enthält nur begrenzten Kontext zum vorherigen Versuch, keine unbegrenzte Historie. E-Mail-Texte und PDF-Kopien werden dort nicht gespeichert. Bei 100 Rechnungen monatlich sind das 1.200 kleine Nachweise plus Sperrdateien pro Jahr.
+
+Unter **System → Rechnungs-E-Mail → Versandnachweise bereinigen** lassen sich persönliche Details aus alten angenommenen oder fehlgeschlagenen Versuchen entfernen: Empfänger, Benutzerkennungen und Notizen. Standard sind 365 Tage, mindestens 30. Minimale Ergebnismerker und Sperrdateien bleiben als Doppelversandschutz erhalten. Unklare oder für Wiederholung freigegebene Versuche bleiben unverändert. Pro Durchlauf werden höchstens 1.000 passende Nachweise bereinigt; bei Bedarf wiederholen. Es wird kein Cronjob angelegt.
+
+Rechnungen, Kunden und Datenbankkonfiguration werden dadurch nicht gelöscht. Backups haben eine eigene Aufbewahrung. Minimale Merker bleiben auch nach Löschen einer Rechnung erhalten; ihre vollständige Entfernung ist kein normaler Bereinigungsschritt, sondern erfordert eine abgestimmte technische Wartung bei angehaltenem Versand.
 
 Updates erhalten Einstellungen, Kundenfelder und Versandbelege. Deaktivierung und Entfernung löschen keine Daten automatisch. Vor produktiver Nutzung zuerst eine vollständig getrennte Testumgebung verwenden.
 

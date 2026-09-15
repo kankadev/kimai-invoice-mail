@@ -33,7 +33,8 @@ final class SettingsController extends AbstractController
         $languages = $this->settings->languages();
         $builder = $this->forms->createNamedBuilder('invoice_mail', FormType::class)
             ->add('sender_name', TextType::class, ['data' => $this->settings->senderName(), 'label' => 'kanka_mail.sender_name', 'required' => false, 'constraints' => [new Length(max: 100)]])
-            ->add('enabled', CheckboxType::class, ['data' => $this->settings->sendingEnabled(), 'label' => 'kanka_mail.enable', 'required' => false]);
+            ->add('enabled', CheckboxType::class, ['data' => $this->settings->sendingEnabled(), 'label' => 'kanka_mail.enable', 'required' => false])
+            ->add('mark_pending', CheckboxType::class, ['data' => $this->settings->markPending(), 'label' => 'kanka_mail.mark_pending', 'help' => 'kanka_mail.mark_pending_help', 'required' => false]);
         $sections = [];
         foreach ($languages as $language => $count) {
             $template = $this->settings->template($language);
@@ -65,7 +66,7 @@ final class SettingsController extends AbstractController
                 }
             }
             if ($form->isValid()) {
-                $this->settings->saveAll(trim($data['sender_name'] ?? ''), $data['enabled'], $templates);
+                $this->settings->saveAll(trim($data['sender_name'] ?? ''), $data['enabled'], $templates, $data['mark_pending']);
                 $this->addFlash('kanka_mail_saved', $this->translator->trans('kanka_mail.saved'));
                 return $this->redirectToRoute('kanka_invoice_mail_settings');
             }
