@@ -1,6 +1,6 @@
 # Invoice Mail für Kimai
 
-Entwickelt von **[kanka.dev](https://kanka.dev)**. Experimenteller Entwicklungsstand, noch keine stabile Version. Aktuell auf selbst gehostetem Kimai 2.66.0 geprüft.
+Entwickelt von **[kanka.dev](https://kanka.dev)**. Version 1.0.0. Auf selbst gehostetem Kimai 2.66.0 und 2.67.0 unter Linux mit lokalem persistentem Speicher geprüft. Andere Versionen, Kimai Cloud, Windows-Hosting und verteilter Speicher sind nicht Teil dieser Freigabe.
 
 ## Einrichtung
 
@@ -56,11 +56,13 @@ Ein unbekannter Platzhalter wie `{unbekannt}` verhindert das Speichern der globa
 
 Für manuellen Versand die EML in Thunderbird öffnen, prüfen oder bearbeiten und dort senden. Nur die E-Mail ist ungesendet; die PDF erhält keine Entwurfsmarkierung. Die Datei bleibt bis zum Löschen im Downloadordner. Das bearbeitbare Öffnen einschließlich PDF-Anhang wurde während der Entwicklung in Thunderbird bestätigt; andere Client-Versionen können abweichen.
 
-Die Vorschau ist 30 Minuten gültig. Ändern sich Absenderkonfiguration oder PDF, muss die E-Mail neu vorbereitet werden. Das Plugin hängt die vorhandene gespeicherte PDF an, ohne eine Rechnung neu zu erzeugen oder zu verändern.
+Direktversand ist zusätzlich an den geprüften Stand des Versandnachweises gebunden. Zwischenzeitliche Versuche, Freigaben oder Bereinigungen erfordern für alle Benutzer eine neue Vorschau. Die Vorschau ist 30 Minuten gültig. Ändern sich Absenderkonfiguration oder PDF, muss die E-Mail neu vorbereitet werden. Das Plugin hängt die vorhandene gespeicherte PDF an, ohne eine Rechnung neu zu erzeugen oder zu verändern.
 
 ### Wiederholungswarnung
 
 Die Checkbox für absichtlichen erneuten Versand erscheint nach einem früheren Direktversandversuch, den der Mailer angenommen hat. Sie basiert auf dem **eigenen Versandbeleg des Plugins** – nicht auf dem Rechnungsstatus New/Pending und nicht auf einer Postfachsuche. Bei einer Rechnung ohne solchen Beleg fehlt die Checkbox.
+
+Eine frühere Annahme bleibt auch nach fehlgeschlagenen Wiederholungen und Bereinigung als Warnung erhalten. Alte Entwicklungsnachweise verlangen vorsichtshalber eine Wiederholungsbestätigung, da ihre Historie unvollständig sein kann.
 
 Ein EML-Download erzeugt keinen Versandbeleg. Einen späteren manuellen Versand über Thunderbird erkennt das Plugin nicht. Vor einem erneuten Versand deshalb selbst die gesendeten Nachrichten prüfen. Die Annahme durch den Mailer bestätigt außerdem noch keine Zustellung im Posteingang.
 
@@ -110,3 +112,9 @@ Rechnungen, Kunden und Datenbankkonfiguration werden dadurch nicht gelöscht. Ba
 Updates erhalten Einstellungen, Kundenfelder und Versandbelege. Deaktivierung und Entfernung löschen keine Daten automatisch. Vor produktiver Nutzung zuerst eine vollständig getrennte Testumgebung verwenden.
 
 Support und individuelle Anpassungen: **mail@kanka.dev** · **https://kanka.dev**. Keine echten Rechnungen oder Kundendaten in öffentlichen GitHub-Issues hinterlegen.
+
+## Betrieb und Aktualisierung
+
+PHP ab 8.2 und lokaler Linux-Speicher mit flock, atomarem Umbenennen sowie Datei- und Verzeichnis-fsync sind erforderlich. Vor Updates Datenbank und Datenverzeichnis gemeinsam sichern und Versand pausieren. Beim Entfernen oder Neuinstallieren des Bundles Anwendungsprozesse anhalten, den kompilierten Ordner `var/cache/prod` beiseite verschieben und den Cache mit `bin/console cache:warmup --env=prod` neu aufbauen; danach Prozesse starten. Datenverzeichnis nicht entfernen. Nach Rückspielen eines älteren Backups Anbieterprotokolle prüfen: Spätere Annahmen können im Backup fehlen.
+
+Prüfumfang und Grenzen: [VALIDATION.md](VALIDATION.md). Weiterentwicklung: [TODO.md](../TODO.md).

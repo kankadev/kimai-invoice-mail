@@ -2,4 +2,4 @@
 
 Please send security reports to mail@kanka.dev. Do not post credentials, invoices or private customer data in public issues.
 
-This project is currently a development preview. Keep it on a separate test installation until a stable release and your own acceptance checks are complete.
+See docs/VALIDATION.md for supported versions and tested boundaries. Test every update on a separate installation before production deployment. SMTP acceptance does not prove inbox delivery.

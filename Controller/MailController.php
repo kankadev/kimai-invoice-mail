@@ -50,8 +50,10 @@ final class MailController extends AbstractController
                 $this->messages->validate($data);
                 $this->messages->create($invoice, $data);
                 $nonce = bin2hex(random_bytes(24));
+                $receipt = $this->delivery->receipt($invoice->getId());
+                $data['receipt_version'] = $this->delivery->version($receipt);
                 $request->getSession()->set('kanka_mail_'.$invoice->getId(), ['nonce' => $nonce, 'created' => time(), 'data' => $data]);
-                return $this->render('@KankaInvoiceMail/preview.html.twig', ['invoice' => $invoice, 'data' => $data, 'nonce' => $nonce, 'sender' => $this->messages->sender()->toString(), 'receipt' => $this->delivery->receipt($invoice->getId()), 'enabled' => $this->settings->sendingEnabled()]);
+                return $this->render('@KankaInvoiceMail/preview.html.twig', ['invoice' => $invoice, 'data' => $data, 'nonce' => $nonce, 'sender' => $this->messages->sender()->toString(), 'receipt' => $receipt, 'has_accepted' => $this->delivery->hasAccepted($receipt), 'enabled' => $this->settings->sendingEnabled()]);
             }
             return $this->render('@KankaInvoiceMail/prepare.html.twig', ['invoice' => $invoice, 'form' => $form->createView(), 'language' => $data['language'], 'sender' => $this->messages->sender()->toString()]);
         } catch (\InvalidArgumentException $e) {
@@ -78,7 +80,7 @@ final class MailController extends AbstractController
                 return new Response($message->toString(), 200, ['Content-Type' => 'message/rfc822', 'Content-Disposition' => 'attachment; filename="invoice-email-'.$invoice->getId().'.eml"', 'Cache-Control' => 'private, no-store']);
             }
             if ($action !== 'send') throw new \InvalidArgumentException('kanka_mail.error.fields');
-            $this->delivery->send($invoice->getId(), $this->getUser()->getId(), $prepared['nonce'], $message, $request->request->getBoolean('resend'));
+            $this->delivery->send($invoice->getId(), $this->getUser()->getId(), $prepared['nonce'], $message, $request->request->getBoolean('resend'), $prepared['data']['receipt_version'] ?? '');
             $request->getSession()->remove('kanka_mail_'.$invoice->getId());
             return $this->render('@KankaInvoiceMail/result.html.twig', ['message' => $this->invoiceStatus->afterAcceptance($invoice), 'error' => false, 'invoice' => $invoice, 'receipt' => $this->delivery->receipt($invoice->getId())]);
         } catch (\InvalidArgumentException $e) {

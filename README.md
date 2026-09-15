@@ -4,7 +4,7 @@ Prepare, review and send invoice emails from Kimai, or download an unsent email 
 
 Developed by **[kanka.dev](https://kanka.dev)**. [Deutsche Anleitung](docs/README.de.md)
 
-**Development preview — not a stable release.** Tested on self-hosted Kimai 2.66.0. Later versions require verification; Kimai Cloud is not supported. Keep your production installation unchanged until you have tested the plugin on a separate instance.
+**Version 1.0.0.** Validated on self-hosted Kimai 2.66.0 and 2.67.0 on Linux with local persistent storage. Test on a separate instance before deployment. Other versions, Kimai Cloud, Windows hosting and distributed storage are not supported by this release.
 
 ## What it does
 
@@ -19,7 +19,7 @@ Developed by **[kanka.dev](https://kanka.dev)**. [Deutsche Anleitung](docs/READM
 
 ## Installation
 
-Requires PHP 8.2 or newer and Kimai 2.66.0. No additional Composer packages, database tables or paid custom-fields plugin are required.
+Requires PHP 8.2 or newer, Kimai 2.66.0 or 2.67.0, and local Linux storage supporting file/directory fsync, flock and atomic rename. No additional Composer packages, database tables or paid custom-fields plugin are required.
 
 1. Back up your Kimai database and data directory.
 2. Place this repository in `var/plugins/KankaInvoiceMailBundle` so that the bundle class is at `var/plugins/KankaInvoiceMailBundle/KankaInvoiceMailBundle.php`.
@@ -27,7 +27,7 @@ Requires PHP 8.2 or newer and Kimai 2.66.0. No additional Composer packages, dat
 4. Open **System → Invoice Mail**. The menu requires Kimai's `system_configuration` permission.
 5. Set the sender display name and review your language templates, including your signature. Direct sending starts disabled. Enable it only after confirming your mail configuration and completing a test.
 
-For an experimental checkout:
+For a source checkout (pin the released tag when available):
 
 ```sh
 git clone https://github.com/kankadev/kimai-invoice-mail.git var/plugins/KankaInvoiceMailBundle
@@ -86,7 +86,7 @@ Unknown placeholders and referenced empty values are rejected. Templates are pla
 
 For manual sending, open the `.eml` in Thunderbird, check or edit the message, and send it there. The email is unsent; the attached invoice is not a draft and receives no draft marking. The downloaded file remains in Downloads until you delete it. Editable opening with the attachment has been confirmed in Thunderbird during development; behavior can vary between client versions.
 
-A preview expires after 30 minutes. If the sender configuration or PDF changes, prepare a new preview. The plugin attaches the existing saved PDF; it does not generate or modify the invoice.
+A direct-send preview is also bound to the current receipt fingerprint, checked under the invoice lock. Any intervening attempt, recovery or compaction requires a fresh review for all users. A preview expires after 30 minutes. If the sender configuration or PDF changes, prepare a new preview. The plugin attaches the existing saved PDF; it does not generate or modify the invoice.
 
 
 Direct sending requires both `create_invoice` and access to the invoice/customer. The mailer accepting a message does not prove inbox delivery. Sent-folder behavior depends on the mail provider; SMTP alone does not promise a Sent copy. Do not configure an additional Sent copy without checking the provider's existing behavior.
@@ -110,7 +110,7 @@ Downloading an EML does not change the status; a later Thunderbird send cannot b
 
 No automatic retries are performed. Raw SMTP diagnostics are not displayed or stored, since they can contain account details. Error descriptions suggest checks but cannot determine the exact provider-side cause. A mailbox-full condition may be rejected immediately, or may arrive later as a bounce **after** SMTP acceptance. The plugin does not read mailboxes, detect bounces, or prove inbox delivery. See [Symfony Mailer](https://symfony.com/doc/6.4/mailer.html) and [RFC 5321](https://www.rfc-editor.org/rfc/rfc5321).
 
-The repeat-send checkbox is based on the plugin’s own receipt, not New/Pending or a mailbox search. An EML download creates no send receipt. Before repeating a manually sent email, check your sent messages yourself.
+An accepted-ever marker survives failed repeat attempts and compaction. Older development receipts conservatively require repeat confirmation because their history may be incomplete. The repeat-send checkbox is based on the plugin’s own receipt, not New/Pending or a mailbox search. An EML download creates no send receipt. Before repeating a manually sent email, check your sent messages yourself.
 
 ### Resolve an uncertain delivery
 
@@ -128,7 +128,7 @@ The plugin keeps one small JSON record and one lock file per invoice under Kimai
 
 Open **System → Invoice Mail → Delivery record maintenance** to remove personal details from final records older than a chosen number of days (default 365, minimum 30). This removes recipient, user identifiers and notes while retaining the minimal outcome/nonce marker and lock for duplicate protection. Uncertain and retry-authorized records are excluded. A run processes at most 1,000 eligible records. Repeat if necessary. This is manual; no cron task is installed.
 
-This does not delete invoices, customer data or configuration from Kimai’s database, and does not alter backups. Configure backup retention separately. Minimal markers remain even after an invoice is deleted; complete marker removal requires an offline, coordinated cleanup and is deliberately not exposed as a routine button. Multi-instance deployments must share the receipt directory on storage supporting reliable `flock` and atomic rename. Distributed storage has not been validated.
+This does not delete invoices, customer data or configuration from Kimai’s database, and does not alter backups. Configure backup retention separately. Minimal markers remain even after an invoice is deleted; complete marker removal requires an offline, coordinated cleanup and is deliberately not exposed as a routine button. This release supports a single Kimai installation with local persistent storage. Distributed and multi-instance storage has not been validated. Both file contents and the renamed directory entry are synchronized before sending. Keep database and receipt backups consistent; restoring an old receipt snapshot cannot recover later provider acceptances. Check provider records after a restore before sending.
 
 ## Safe testing
 
@@ -144,11 +144,11 @@ This is an additional check, not a substitute for transport/network isolation. C
 
 ## Updates and removal
 
-Replace plugin files and reload Kimai. Preserve the data directory and database: language settings are stored as `kanka_invoice_mail.*` configuration keys, customer overrides as `kanka_mail_*` metadata, and delivery receipts as files. Disabling/removing the plugin does not delete those values. There is no automatic uninstall cleanup.
+Back up first, pause invoice sending, replace plugin files and reload Kimai. When removing/reinstalling the bundle, stop application workers and move the old compiled `var/cache/prod` directory aside before warming the cache with `bin/console cache:warmup --env=prod`; stale compiled services may still reference removed classes. Restart workers after the cache is ready. Preserve the data directory and database: language settings are stored as `kanka_invoice_mail.*` configuration keys, customer overrides as `kanka_mail_*` metadata, and delivery receipts as files. Disabling/removing the plugin does not delete those values. There is no automatic uninstall cleanup.
 
 ## Development and support
 
-Run `php Tests/TemplateTextTest.php` for standalone template tests. Run `php Tests/SmtpSenderTest.php /path/to/vendor/autoload.php` with Symfony Mailer available for local-only SMTP protocol tests. These tests start disposable loopback servers and never relay mail. `python tools/package.py` builds a ZIP from an explicit source allowlist. See [TODO.md](TODO.md) for remaining release work and [CHANGELOG.md](CHANGELOG.md) for changes.
+Run `php Tests/TemplateTextTest.php` for standalone template tests. Run `php Tests/SmtpSenderTest.php /path/to/vendor/autoload.php` with Symfony Mailer available for local-only SMTP protocol tests. These tests start disposable loopback servers and never relay mail. `python tools/package.py` builds a ZIP from an explicit source allowlist. See [docs/VALIDATION.md](docs/VALIDATION.md) for release evidence and [TODO.md](TODO.md) for future work and [CHANGELOG.md](CHANGELOG.md) for changes.
 
 Report reproducible issues on [GitHub](https://github.com/kankadev/kimai-invoice-mail/issues), using synthetic examples. For implementation support or custom integration work, contact **[kanka.dev](https://kanka.dev)** or **mail@kanka.dev**. Please do not include invoices, credentials or private customer information in public issues.
 

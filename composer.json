@@ -2,11 +2,28 @@
   "name": "kankadev/kimai-invoice-mail",
   "description": "Reviewed invoice emails and multilingual templates for Kimai",
   "type": "kimai-plugin",
-  "version": "0.1.0-dev",
+  "version": "1.0.0",
   "license": "AGPL-3.0-or-later",
   "homepage": "https://kanka.dev",
-  "authors": [{"name": "Akay", "email": "mail@kanka.dev", "homepage": "https://kanka.dev"}],
-  "require": {"php": ">=8.2"},
-  "extra": {"kimai": {"require": 26600, "name": "Invoice Mail — by kanka.dev"}},
-  "autoload": {"psr-4": {"KimaiPlugin\\KankaInvoiceMailBundle\\": ""}}
+  "authors": [
+    {
+      "name": "Akay",
+      "email": "mail@kanka.dev",
+      "homepage": "https://kanka.dev"
+    }
+  ],
+  "require": {
+    "php": ">=8.2"
+  },
+  "extra": {
+    "kimai": {
+      "require": 26600,
+      "name": "Invoice Mail — by kanka.dev"
+    }
+  },
+  "autoload": {
+    "psr-4": {
+      "KimaiPlugin\\KankaInvoiceMailBundle\\": ""
+    }
+  }
 }

@@ -8,7 +8,7 @@ metadata = json.loads((root / 'composer.json').read_text(encoding='utf8'))
 output = root / 'build'
 output.mkdir(exist_ok=True)
 target = output / ('KankaInvoiceMailBundle-' + metadata['version'] + '.zip')
-files = [root / name for name in ['composer.json', 'KankaInvoiceMailBundle.php', 'README.md', 'LICENSE', 'CHANGELOG.md', 'SECURITY.md']]
+files = [root / name for name in ['composer.json', 'KankaInvoiceMailBundle.php', 'README.md', 'LICENSE', 'CHANGELOG.md', 'SECURITY.md', 'TODO.md']]
 for directory in ['Controller', 'DependencyInjection', 'EventSubscriber', 'Service', 'Resources', 'docs']:
     files.extend(path for path in (root / directory).rglob('*') if path.is_file() and path.suffix in ['.php', '.yaml', '.twig', '.md'])
 with ZipFile(target, 'w', ZIP_DEFLATED) as archive:

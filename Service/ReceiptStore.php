@@ -50,16 +50,27 @@ final class ReceiptStore
                 if (fwrite($stream, $content) !== strlen($content) || !fflush($stream) || !fsync($stream)) throw new \RuntimeException();
             } finally { fclose($stream); }
             if (!@rename($temporary, $path)) throw new \RuntimeException();
+            // Persist the rename itself before SMTP can start, not just the file content.
+            $directory = @fopen(dirname($path), 'r');
+            if (!$directory) throw new \RuntimeException();
+            try { if (!fsync($directory)) throw new \RuntimeException(); }
+            finally { fclose($directory); }
         } catch (\Throwable) { throw new \InvalidArgumentException('kanka_mail.error.storage'); }
         finally { if (is_file($temporary)) @unlink($temporary); }
     }
-    public function fingerprint(array $receipt): string { return hash('sha256', json_encode($receipt, JSON_THROW_ON_ERROR)); }
+    public function fingerprint(?array $receipt): string { return hash('sha256', json_encode($receipt, JSON_THROW_ON_ERROR)); }
+    public function hasAccepted(?array $receipt): bool
+    {
+        // Old development records may have lost earlier attempt history. Require confirmation.
+        return $receipt !== null && (!array_key_exists('has_accepted', $receipt) || $receipt['has_accepted'] === true || $receipt['status'] === 'accepted' || ($receipt['previous']['status'] ?? null) === 'accepted');
+    }
     public function resolve(int $id, string $fingerprint, int $user, string $decision, string $reason): void
     {
         $this->locked($id, function () use ($id, $fingerprint, $user, $decision, $reason): void {
             $receipt = $this->read($id);
             if ($receipt === null || $receipt['status'] !== 'uncertain' || !hash_equals($this->fingerprint($receipt), $fingerprint)) throw new \InvalidArgumentException('kanka_mail.error.stale_receipt');
             if (!in_array($decision, ['accepted', 'retryable'], true) || trim($reason) === '' || strlen($reason) > 1000) throw new \InvalidArgumentException('kanka_mail.error.fields');
+            $receipt['has_accepted'] = $this->hasAccepted($receipt) || $decision === 'accepted';
             $receipt['status'] = $decision;
             $receipt['recovery'] = ['user' => $user, 'time' => gmdate(DATE_ATOM), 'decision' => $decision, 'reason' => trim($reason)];
             $this->write($id, $receipt);
@@ -79,6 +90,7 @@ final class ReceiptStore
                     if ($receipt === null || !in_array($receipt['status'], ['accepted', 'failed'], true) || isset($receipt['compacted'])) return 0;
                     $latest = max(strtotime($receipt['time']) ?: time(), strtotime($receipt['recovery']['time'] ?? '') ?: 0);
                     if ($latest >= $cutoff) return 0;
+                    $receipt['has_accepted'] = $this->hasAccepted($receipt);
                     unset($receipt['to'], $receipt['user'], $receipt['previous']);
                     if (isset($receipt['recovery'])) unset($receipt['recovery']['user'], $receipt['recovery']['reason']);
                     $receipt['compacted'] = gmdate(DATE_ATOM); $this->write($id, $receipt); return 1;

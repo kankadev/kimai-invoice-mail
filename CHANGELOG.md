@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.0
+
+- Preserve accepted delivery history through failed repeats and maintenance.
+- Bind every reviewed send to the receipt state under its lock, invalidating stale sessions after recovery.
+- Synchronize directory entries before SMTP and show the original recipient during recovery.
+- Include release checklist in the source package.
+- Validate Kimai 2.66/2.67, lifecycle retention, responsive views and SMTP/state regressions.
+
 ## 0.1.0-dev
 
 Initial development preview: multilingual invoice email templates, customer overrides, reviewed delivery using Kimai's mailer, and .eml download with the stored PDF. Direct sending is disabled until configured. Not yet a stable production release.
