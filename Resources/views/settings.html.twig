@@ -17,8 +17,7 @@
 <div class="alert alert-info">{{ 'kanka_mail.languages_help'|trans }}</div>
 <div class="card mb-3"><div class="card-body">
     <h2 class="card-title">{{ 'kanka_mail.placeholders'|trans }}</h2>
-    <p>{% for key in placeholders %}<code>{{ '{' ~ key ~ '}' }}</code> {% endfor %}</p>
-    <p>{{ 'kanka_mail.placeholder_help'|trans }}</p>
+    {% include '@KankaInvoiceMail/placeholders.html.twig' %}
 </div></div>
 {% for section in sections %}
 <div class="card mb-3"><div class="card-body">

@@ -1,0 +1,11 @@
+<p>{{ 'kanka_mail.placeholder_copy'|trans }}</p>
+<div class="table-responsive">
+<table class="table table-sm table-vcenter">
+    <thead><tr><th scope="col">{{ 'kanka_mail.placeholder_token'|trans }}</th><th scope="col">{{ 'kanka_mail.placeholder_meaning'|trans }}</th></tr></thead>
+    <tbody>
+    {% for key in constant('KimaiPlugin\\KankaInvoiceMailBundle\\Service\\TemplateText::KEYS') %}
+        <tr><td><strong><code>{{ '{' ~ key ~ '}' }}</code></strong></td><td>{{ ('kanka_mail.placeholder.' ~ key)|trans }}</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>

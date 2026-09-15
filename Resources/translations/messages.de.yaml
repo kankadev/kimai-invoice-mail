@@ -17,7 +17,6 @@ kanka_mail.enable: Direktversand nach Vorschau über Kimais konfigurierten Maile
 kanka_mail.settings_intro: Hier die E-Mail-Standards einstellen. PDF-Inhalt und Billing Information bleiben unverändert. Direktversand ist zunächst deaktiviert.
 kanka_mail.languages_help: Die verfügbaren Sprachen ergeben sich aus den Spracheinstellungen Ihrer Kunden. Ändern Sie dort die Sprache, um eine weitere Vorlage einzurichten. Ungenutzte gespeicherte Vorlagen bleiben erhalten.
 kanka_mail.placeholders: Verfügbare Platzhalter
-kanka_mail.placeholder_help: "Customer Name ist Kimais natives Feld Name. Company nutzt das Feld Firma, ersatzweise Name. Contact ist der vollständige Kontaktname; Vor- und Nachname werden nicht abgeleitet. Platzhalter funktionieren in allen Vorlagen und Kundenüberschreibungen. Fehlende referenzierte Angaben verhindern die Vorbereitung. Die Signatur gehört in den Nachrichtentext."
 kanka_mail.customer_count: '%count% Kunden'
 kanka_mail.unused: Diese gespeicherte Vorlage wird derzeit nicht verwendet und bleibt erhalten.
 kanka_mail.missing_template: Für diese Sprache fehlt eine Vorlage. Bitte vor dem Versand anlegen.
@@ -34,7 +33,6 @@ kanka_mail.status.uncertain: Versand unklar — vor erneutem Versand beim Mailan
 kanka_mail.customer.greeting: Abweichende E-Mail-Anrede
 kanka_mail.customer.subject: Abweichender E-Mail-Betreff
 kanka_mail.customer.body: Abweichende E-Mail-Nachricht
-kanka_mail.customer.help: "Leer lassen, um die Sprachvorlage zu übernehmen. Platzhalter funktionieren in allen drei Feldern. Zum Kopieren: {customer_name} (Kundenname), {company} (Firma, sonst Kundenname), {contact} (vollständiger Kontaktname), {invoice_number}, {invoice_date}, {due_date}, {total}, {currency}. Fehlende referenzierte Angaben verhindern die Vorbereitung. Gilt nur für die E-Mail; Billing Information bleibt in der PDF."
 kanka_mail.error.placeholder: Unbekannter oder fehlerhafter Platzhalter. Bitte nur die dokumentierten Platzhalter verwenden.
 kanka_mail.error.missing_value: Ein Platzhalter verweist auf leere Kunden- oder Rechnungsdaten. Bitte Angaben ergänzen oder Vorlage anpassen.
 kanka_mail.error.language: Für die Kundensprache fehlt eine vollständige Vorlage. Bitte in den Rechnungs-E-Mail-Einstellungen ergänzen.
@@ -52,3 +50,15 @@ kanka_mail.error.transport: Versand fehlgeschlagen oder unklar. Vor erneutem Ver
 kanka_mail.error.expired: Diese Vorschau ist abgelaufen oder wurde ersetzt. Bitte E-Mail erneut vorbereiten und prüfen.
 
 kanka_mail.saved: Alle Einstellungen wurden gespeichert.
+kanka_mail.placeholder_copy: "Nur den fett dargestellten Code links kopieren, einschließlich beider geschweifter Klammern. Die Erklärung rechts gehört nicht zum Platzhalter. Alle Platzhalter funktionieren in Betreff, Anrede und Nachricht."
+kanka_mail.placeholder_token: "Platzhalter zum Kopieren"
+kanka_mail.placeholder_meaning: "Bedeutung"
+kanka_mail.customer.help: "Einzelne Felder leer lassen, um die Vorlage der Kundensprache zu verwenden. Diese Felder betreffen nur die E-Mail, nicht die Rechnungs-PDF. Fehlende Angaben, auf die ein Platzhalter verweist, müssen vor der Vorbereitung ergänzt werden."
+kanka_mail.placeholder.customer_name: "Das Feld Name des Kunden in Kimai."
+kanka_mail.placeholder.company: "Das Feld Firma; wenn es leer ist, wird der Kundenname verwendet."
+kanka_mail.placeholder.contact: "Das vollständige Feld Contact beziehungsweise Kontakt. Der Name wird nicht aufgeteilt."
+kanka_mail.placeholder.invoice_number: "Die Nummer der ausgewählten, gespeicherten Rechnung."
+kanka_mail.placeholder.invoice_date: "Rechnungsdatum im Format JJJJ-MM-TT."
+kanka_mail.placeholder.due_date: "Fälligkeitsdatum im Format JJJJ-MM-TT."
+kanka_mail.placeholder.total: "Rechnungsbetrag einschließlich Währung, formatiert in der Kundensprache."
+kanka_mail.placeholder.currency: "Währungskürzel, zum Beispiel EUR oder USD."

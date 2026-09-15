@@ -17,7 +17,6 @@ kanka_mail.enable: Enable reviewed direct sending through Kimai's configured mai
 kanka_mail.settings_intro: Configure email defaults here. Invoice PDF content and billing information are not changed. Direct sending is disabled until you enable it.
 kanka_mail.languages_help: Available languages come from your customers' language settings. Change the language on a customer to configure another template. Existing unused templates are retained.
 kanka_mail.placeholders: Available placeholders
-kanka_mail.placeholder_help: "Customer name is Kimai’s native Name field. Company uses the Company field, falling back to Name when empty. Contact is the complete contact name; no first or last name is inferred. Placeholders work in all templates and customer overrides. Missing referenced data prevents preparation. Include your signature in the message."
 kanka_mail.customer_count: '%count% customers'
 kanka_mail.unused: This saved template is currently unused and has been retained.
 kanka_mail.missing_template: No template exists for this language. Add one before sending.
@@ -34,7 +33,6 @@ kanka_mail.status.uncertain: Delivery uncertain — check the mail provider befo
 kanka_mail.customer.greeting: Email greeting override
 kanka_mail.customer.subject: Email subject override
 kanka_mail.customer.body: Email message override
-kanka_mail.customer.help: "Leave empty to inherit the language template. Placeholders work in all three fields. Copy as needed: {customer_name} (customer name), {company} (company, otherwise customer name), {contact} (complete contact name), {invoice_number}, {invoice_date}, {due_date}, {total}, {currency}. Missing referenced data prevents preparation. Applies only to email; billing information stays in the PDF."
 kanka_mail.error.placeholder: Unknown or malformed placeholder. Use only the documented placeholders.
 kanka_mail.error.missing_value: A placeholder refers to empty customer or invoice data. Complete the data or adjust the template.
 kanka_mail.error.language: No complete template exists for the customer's language. Configure it in Invoice Mail settings.
@@ -52,3 +50,15 @@ kanka_mail.error.transport: Delivery failed or is uncertain. Check the mail prov
 kanka_mail.error.expired: This preview expired or was replaced. Prepare and review the email again.
 
 kanka_mail.saved: All settings were saved.
+kanka_mail.placeholder_copy: "Copy only the bold code in the left column, including both braces. The right column explains its meaning and is not part of the placeholder. All placeholders work in subject, greeting and message."
+kanka_mail.placeholder_token: "Placeholder to copy"
+kanka_mail.placeholder_meaning: "Meaning"
+kanka_mail.customer.help: "Leave any override empty to use the customer’s language template. These fields affect the email only, not the invoice PDF. A referenced empty value must be completed before preparing the email."
+kanka_mail.placeholder.customer_name: "The customer’s Name field in Kimai."
+kanka_mail.placeholder.company: "The Company field; uses the customer’s Name if Company is empty."
+kanka_mail.placeholder.contact: "The complete Contact field. The name is not split into first and last names."
+kanka_mail.placeholder.invoice_number: "The number of the selected, saved invoice."
+kanka_mail.placeholder.invoice_date: "Invoice date in YYYY-MM-DD format."
+kanka_mail.placeholder.due_date: "Payment due date in YYYY-MM-DD format."
+kanka_mail.placeholder.total: "Invoice total, including currency, formatted in the customer’s language."
+kanka_mail.placeholder.currency: "Currency code, for example EUR or USD."

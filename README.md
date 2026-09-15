@@ -42,7 +42,9 @@ The settings page lists languages actually assigned to customers, with a custome
 
 English and German start with neutral editable defaults. A locale variant can inherit its own base language. An unsupported language requires a template before preparation; the plugin does not silently switch to English. Updates do not replace saved templates.
 
-Each customer has three optional fields:
+All settings on the page are saved together using one Save button. A visible confirmation appears after success. Invalid templates prevent the entire update. Customer fields include a copyable placeholder reference.
+
+Under **Administration → Customers → Edit**, the **Invoice Mail** group contains three optional fields, in subject, greeting, message order:
 
 | Field | Empty value | Example override |
 | --- | --- | --- |
@@ -51,6 +53,8 @@ Each customer has three optional fields:
 | Email message | Language default | Your complete message and closing signature |
 
 The greeting is placed above the message with a blank line. There are no inferred first-name or last-name fields. **Billing information continues to control the invoice PDF only.**
+
+**All placeholders work in subject, greeting and message**, both in language defaults and customer overrides. Copy only the code from the left column, including `{` and `}`. The explanation is not part of the placeholder. For example, enter `Hello {contact},`; do not append the words “Complete contact name”.
 
 Available placeholders:
 
@@ -69,13 +73,27 @@ Unknown placeholders and referenced empty values are rejected. Templates are pla
 
 ## Sending and manual email download
 
-Open **Invoice history**, select **Prepare email** from an invoice's actions, edit the recipient/text if necessary, then review. The final screen shows the sender, recipient, language, subject, message and stored PDF attachment. A preview expires after 30 minutes. If the sender configuration or PDF changes, prepare a new preview.
+1. Open **Invoices → Invoice history** and choose **Prepare email** from the saved invoice’s actions. There is no one-click send action in the history.
+2. On **Prepare email**, check the invoice, sender and PDF link. Recipient, subject, greeting and message are filled from the customer and language template. You can change them for this email; those edits do not change customer settings or defaults.
+3. Select **Review email**. This screen is read-only. Check the recipient, subject, message and attached PDF before continuing.
+4. Choose one of the following actions:
 
-`Download email (.eml)` creates an email for a compatible mail client; it does not send anything or change the invoice. The download remains on your computer until you remove it. Thunderbird handling must be checked with your installed version.
+| Action | Result |
+| --- | --- |
+| **Send now** | Sends through Kimai’s configured mailer after explicit confirmation on this screen. Direct sending must be enabled in settings. |
+| **Download email (.eml)** | Downloads an unsent email containing the same final PDF for manual sending in a compatible mail client. No email is sent by Kimai. |
+| **Start over** | Returns to preparation and reloads customer defaults. Edits made only for the current email are discarded. |
+
+For manual sending, open the `.eml` in Thunderbird, check or edit the message, and send it there. The email is unsent; the attached invoice is not a draft and receives no draft marking. The downloaded file remains in Downloads until you delete it. Editable opening with the attachment has been confirmed in Thunderbird during development; behavior can vary between client versions.
+
+A preview expires after 30 minutes. If the sender configuration or PDF changes, prepare a new preview. The plugin attaches the existing saved PDF; it does not generate or modify the invoice.
+
 
 Direct sending requires both `create_invoice` and access to the invoice/customer. The mailer accepting a message does not prove inbox delivery. Sent-folder behavior depends on the mail provider; SMTP alone does not promise a Sent copy. Do not configure an additional Sent copy without checking the provider's existing behavior.
 
 ## Duplicate and error handling
+
+The repeat-send checkbox appears after a previous direct-send attempt accepted by the mailer. It is based on the plugin’s own receipt, **not** the invoice’s New/Pending status or a mailbox search. A new invoice without a plugin receipt has no repeat-send checkbox. Downloading an EML does not create a send receipt, and the plugin cannot detect a later manual send through Thunderbird. Check your own sent messages before repeating such a send.
 
 Only an explicit POST with a valid session and CSRF token can send. A per-invoice filesystem lock and persistent receipt prevent duplicate submissions, including simultaneous requests. A deliberately repeated send requires a new preview and explicit confirmation after a previously accepted attempt.
 
@@ -106,5 +124,3 @@ Run `php Tests/TemplateTextTest.php` for standalone template tests. `python tool
 Report reproducible issues on [GitHub](https://github.com/kankadev/kimai-invoice-mail/issues), using synthetic examples. For implementation support or custom integration work, contact **[kanka.dev](https://kanka.dev)** or **mail@kanka.dev**. Please do not include invoices, credentials or private customer information in public issues.
 
 Licensed under AGPL-3.0-or-later. This is an independent plugin, not an official Kimai product.
-
-All settings on the page are saved together using one Save button. A visible confirmation appears after success. Invalid templates prevent the entire update. Customer fields include a copyable placeholder reference.

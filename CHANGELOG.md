@@ -14,3 +14,8 @@ Initial development preview: multilingual invoice email templates, customer over
 - Group subject, greeting and message in one native form fieldset with shared placeholder guidance.
 - Use distinct form block names to prevent dynamic text-field theme collisions.
 - Verify grouped field saving in English/German and 16 prepared email/PDF combinations.
+
+### Placeholder guidance and workflow documentation
+- Show one shared, translated placeholder table in customer forms and settings.
+- Separate exact copyable tokens from explanations, one placeholder per row.
+- Document preparation, read-only review, direct sending, EML download and repeat-send behavior in English and German.
